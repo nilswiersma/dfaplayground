@@ -1,0 +1,8 @@
+[submodule "submod/aes"]
+	path = submod/aes
+	url = https://github.com/nilswiersma/aes.git
+	branch = master
+[submodule "submod/JeanGrey"]
+	path = submod/JeanGrey
+	url = https://github.com/nilswiersma/JeanGrey.git
+	branch = master
