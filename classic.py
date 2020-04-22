@@ -1,6 +1,6 @@
 from submod.aes.aes import AES, matrix2bytes
 from submod.JeanGrey.phoenixAES import phoenixAES
-import random
+import random, os
 
 def single_bit_flip(s):
     i = random.choice(range(4))
@@ -110,17 +110,20 @@ for ik in iks:
 print('--encrypt--')
 for intermediate in intermediates:
     faulted = []
-
-    for _ in range(10):
-        faulted.append(ctx.encrypt_block(bytes(message), glitch_at=intermediate, glitch=single_bit_flip))
+    for _ in range(10000):
+        faulted.append(os.urandom(16))
+    for _ in range(100):
+        # faulted.append(ctx.encrypt_block(bytes(message), glitch_at=intermediate, glitch=single_bit_flip))
         # faulted.append(ctx.encrypt_block(bytes(message), glitch_at=intermediate, glitch=single_byte_corruption))
         # faulted.append(ctx.encrypt_block(bytes(message), glitch_at=intermediate, glitch=single_col_corruption))
         # faulted.append(ctx.encrypt_block(bytes(message), glitch_at=intermediate, glitch=single_byte_multi_bit_flip))
-        # faulted.append(ctx.encrypt_block(bytes(message), glitch_at=intermediate, glitch=double_byte_multi_bit_flip))
+        faulted.append(ctx.encrypt_block(bytes(message), glitch_at=intermediate, glitch=double_byte_multi_bit_flip))
         # faulted.append(ctx.encrypt_block(bytes(message), glitch_at=intermediate, glitch=triple_byte_multi_bit_flip))
         # print(f'faulted    : {faulted[-1].hex()}')
-
+    random.shuffle(faulted)
     roundkey, idx, candidates = phoenixAES.crack_bytes(faulted, ciphertext, verbose=0, encrypt=True)
+    print(f"roundkey   : {''.join(['%02x' % x if x is not None else '..' for x in roundkey])} ({idx}, {intermediate})")
+    roundkey, idx, candidates = phoenixAES.crack_bytes(faulted, ciphertext, verbose=0, encrypt=True, fixabsorb=True)
     print(f"roundkey   : {''.join(['%02x' % x if x is not None else '..' for x in roundkey])} ({idx}, {intermediate})")
     # print(candidates)
 
