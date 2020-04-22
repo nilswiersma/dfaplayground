@@ -80,10 +80,12 @@ intermediates = [
     # 'ark7',
     # 'sb8',
     # 'sr8',
-    'mc8',
-    'ark8',
+
+    # 'mc8',
+    # 'ark8',
     'sb9',
-    'sr9',
+    # 'sr9',
+    
     # 'mc9',
     # 'ark9',
     # 'sb10',
@@ -109,7 +111,7 @@ print('--encrypt--')
 for intermediate in intermediates:
     faulted = []
 
-    for _ in range(50):
+    for _ in range(10):
         faulted.append(ctx.encrypt_block(bytes(message), glitch_at=intermediate, glitch=single_bit_flip))
         # faulted.append(ctx.encrypt_block(bytes(message), glitch_at=intermediate, glitch=single_byte_corruption))
         # faulted.append(ctx.encrypt_block(bytes(message), glitch_at=intermediate, glitch=single_col_corruption))
@@ -118,9 +120,9 @@ for intermediate in intermediates:
         # faulted.append(ctx.encrypt_block(bytes(message), glitch_at=intermediate, glitch=triple_byte_multi_bit_flip))
         # print(f'faulted    : {faulted[-1].hex()}')
 
-    recovered, idx = phoenixAES.crack_bytes(faulted, ciphertext, verbose=0, encrypt=True)
-    if recovered:
-        print(f'recovered  : {recovered.hex()} ({idx}, {intermediate})')
+    roundkey, idx, candidates = phoenixAES.crack_bytes(faulted, ciphertext, verbose=0, encrypt=True)
+    print(f"roundkey   : {''.join(['%02x' % x if x is not None else '..' for x in roundkey])} ({idx}, {intermediate})")
+    # print(candidates)
 
 # print('--decrypt--')
 # for intermediate in intermediates:
