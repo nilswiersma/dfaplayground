@@ -73,11 +73,11 @@ intermediates = [
     # 'sb6',
     # 'sr6',
 
-    'mc6',
-    'ark6',
+    # 'mc6',
+    # 'ark6',
+    # 'sb7',
+    # 'sr7',
 
-    'sb7',
-    'sr7',
     'mc7',
     'ark7',
     'sb8',
@@ -88,9 +88,8 @@ intermediates = [
     'sb9',
     'sr9',
     
-    'mc9',
-    'ark9',
-
+    # 'mc9',
+    # 'ark9',
     # 'sb10',
     # 'sr10',
     # 'ark10',
@@ -110,33 +109,33 @@ for ik in iks:
     print(f'ik{ctr:02}       : {ik.hex()}')
     ctr += 1
 
-# print('--encrypt--')
-# for intermediate in intermediates:
-#     print(f'--{intermediate}--')
-#     faulted = []
-#     # for _ in range(10000):
-#     #     faulted.append(os.urandom(16))
-#     for _ in range(200):
-#         faulted.append(ctx.encrypt_block(bytes(message), glitch_at=intermediate, glitch=single_bit_flip))
-#         # faulted.append(ctx.encrypt_block(bytes(message), glitch_at=intermediate, glitch=single_byte_corruption))
-#         # faulted.append(ctx.encrypt_block(bytes(message), glitch_at=intermediate, glitch=single_col_corruption))
-#         # faulted.append(ctx.encrypt_block(bytes(message), glitch_at=intermediate, glitch=single_byte_multi_bit_flip))
-#         # faulted.append(ctx.encrypt_block(bytes(message), glitch_at=intermediate, glitch=double_byte_multi_bit_flip))
-#         # faulted.append(ctx.encrypt_block(bytes(message), glitch_at=intermediate, glitch=triple_byte_multi_bit_flip))
-#         # print(f'faulted    : {faulted[-1].hex()}')
-#     random.shuffle(faulted)
-#     # roundkey, idx, candidates = phoenixAES.crack_bytes(faulted, ciphertext, verbose=0, encrypt=True)
-#     # print(f"roundkey   : {''.join(['%02x' % x if x is not None else '..' for x in roundkey])} ({idx}, {intermediate})")
-#     roundkey, idx, candidates = phoenixAES.crack_bytes(faulted, ciphertext, verbose=0, encrypt=True, fixabsorb=True)
-#     print(f"roundkey   : {''.join(['%02x' % x if x is not None else '..' for x in roundkey])} ({idx}, {intermediate})")
-#     if None in roundkey:
-#         # roundkey, idx, candidates = phoenixAES.crack_bytes(
-#         #     phoenixAES.convert_r8faults_bytes(faulted, ciphertext), ciphertext, verbose=0, encrypt=True)
-#         # print(f"roundkey   : {''.join(['%02x' % x if x is not None else '..' for x in roundkey])} ({idx}, {intermediate})")
-#         roundkey, idx, candidates = phoenixAES.crack_bytes(
-#             phoenixAES.convert_r8faults_bytes(faulted, ciphertext), ciphertext, verbose=0, encrypt=True, fixabsorb=True)
-#         print(f"roundkey   : {''.join(['%02x' % x if x is not None else '..' for x in roundkey])} ({idx}, {intermediate})")
-#     # print(candidates)
+print('--encrypt--')
+for intermediate in intermediates:
+    print(f'--{intermediate}--')
+    faulted = []
+    for _ in range(10):
+        faulted.append(os.urandom(16))
+    # for _ in range(200):
+    #     faulted.append(ctx.encrypt_block(bytes(message), glitch_at=intermediate, glitch=single_bit_flip))
+        # faulted.append(ctx.encrypt_block(bytes(message), glitch_at=intermediate, glitch=single_byte_corruption))
+        # faulted.append(ctx.encrypt_block(bytes(message), glitch_at=intermediate, glitch=single_col_corruption))
+        # faulted.append(ctx.encrypt_block(bytes(message), glitch_at=intermediate, glitch=single_byte_multi_bit_flip))
+        # faulted.append(ctx.encrypt_block(bytes(message), glitch_at=intermediate, glitch=double_byte_multi_bit_flip))
+        # faulted.append(ctx.encrypt_block(bytes(message), glitch_at=intermediate, glitch=triple_byte_multi_bit_flip))
+        # print(f'faulted    : {faulted[-1].hex()}')
+    random.shuffle(faulted)
+    # roundkey, idx, candidates = phoenixAES.crack_bytes(faulted, ciphertext, verbose=0, encrypt=True)
+    # print(f"roundkey   : {''.join(['%02x' % x if x is not None else '..' for x in roundkey])} ({idx}, {intermediate})")
+    roundkey, idx, candidates = phoenixAES.crack_bytes(faulted, ciphertext, verbose=0, encrypt=True)
+    print(f"roundkey   : {''.join(['%02x' % x if x is not None else '..' for x in roundkey])} ({idx}, {intermediate})")
+    if None in roundkey:
+        # roundkey, idx, candidates = phoenixAES.crack_bytes(
+        #     phoenixAES.convert_r8faults_bytes(faulted, ciphertext), ciphertext, verbose=0, encrypt=True)
+        # print(f"roundkey   : {''.join(['%02x' % x if x is not None else '..' for x in roundkey])} ({idx}, {intermediate})")
+        roundkey, idx, candidates = phoenixAES.crack_bytes(
+            phoenixAES.convert_r8faults_bytes(faulted, ciphertext), ciphertext, verbose=0, encrypt=True)
+        print(f"roundkey   : {''.join(['%02x' % x if x is not None else '..' for x in roundkey])} ({idx}, {intermediate})")
+    # print(candidates)
 
 
 
@@ -168,7 +167,7 @@ for ik in iks:
 #     print(ctr)
 #     print(iks[-1].hex(), iks[-1].hex() == ''.join(['%02x' % x if x is not None else '..' for x in key]))
 
-#     roundkey, idx, candidates = phoenixAES.crack_bytes(output, ciphertext, verbose=0, encrypt=True, fixabsorb=True)
+#     roundkey, idx, candidates = phoenixAES.crack_bytes(output, ciphertext, verbose=0, encrypt=True)
 #     print(f"roundkey   : {''.join(['%02x' % x if x is not None else '..' for x in roundkey])} ({idx}, {intermediate})")
 
 
@@ -292,22 +291,27 @@ faulted = [
     bytes.fromhex('abf79813ff0a2db72599cc3faa2d1e2f'),
 ]
 
-print('--encrypt--')
-for intermediate in ['sb9']:
-    print(f'--{intermediate}--')
-    # faulted = []
-    # # # for _ in range(10000):
-    # # #     faulted.append(os.urandom(16))
-    # for _ in range(500):
-    #     faulted.append(ctx.encrypt_block(bytes(message), glitch_at=intermediate, glitch=double_byte_multi_bit_flip))
-    # random.shuffle(faulted)
-    # for f in faulted:
-    #     print(f"bytes.fromhex('{f.hex()}'),")
-    roundkey, idx, candidates = phoenixAES.crack_bytes(faulted[:200], ciphertext, verbose=0, encrypt=True, fixabsorb=True)
-    print(f"roundkey   : {''.join(['%02x' % x if x is not None else '..' for x in roundkey])} ({idx}, {intermediate})")
-    # print(candidates)
+# print('--encrypt--')
+# for intermediate in ['sb9']:
+#     print(f'--{intermediate}--')
+#     # faulted = []
+#     # # # for _ in range(10000):
+#     # # #     faulted.append(os.urandom(16))
+#     # for _ in range(500):
+#     #     faulted.append(ctx.encrypt_block(bytes(message), glitch_at=intermediate, glitch=double_byte_multi_bit_flip))
+#     # random.shuffle(faulted)
+#     # for f in faulted:
+#     #     print(f"bytes.fromhex('{f.hex()}'),")
+#     roundkey, idx, candidates = phoenixAES.crack_bytes(faulted[:200], ciphertext, verbose=0, encrypt=True)
+#     print(f"roundkey   : {''.join(['%02x' % x if x is not None else '..' for x in roundkey])} ({idx}, {intermediate})")
+#     # print(candidates)
 
-with open('tracefile', 'w') as t:
-    print(ciphertext.hex(), file=t)
-    for f in faulted:
-        print(f.hex(), file=t)
+# with open('tracefile', 'w') as t:
+#     print(ciphertext.hex(), file=t)
+#     for f in faulted:
+#         print(f.hex(), file=t)
+
+# cracker = phoenixAES.ByteCracker(ciphertext, encrypt=True, verbose=0)
+# for faulty in faulted:
+#     roundkey, idx, candidates = cracker.crack_bytes(faulty)
+#     print(f"roundkey   : {''.join(['%02x' % x if x is not None else '..' for x in roundkey])} ({idx})")
