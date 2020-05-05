@@ -1,51 +1,8 @@
 from submod.aes.aes import AES, matrix2bytes
 from submod.JeanGrey.phoenixAES import phoenixAES
 import random, os
+import faultmodels
 
-def single_bit_flip(s):
-    i = random.choice(range(4))
-    j = random.choice(range(4))
-    bit = random.choice(range(8))
-    s[i][j] = s[i][j] ^ (1<<bit)
-
-def single_byte_corruption(s):
-    i = random.choice(range(4))
-    j = random.choice(range(4))
-    s[i][j] = random.randint(0, 255)
-
-def single_col_corruption(s):
-    i = random.choice(range(4))
-    s[i] = [random.randint(0, 255), random.randint(0, 255), random.randint(0, 255), random.randint(0, 255)]
-
-def random_multi_bit_flip(s):
-    for _ in range(4):
-        i = random.choice(range(4))
-        j = random.choice(range(4))
-        bit = random.choice(range(8))
-        s[i][j] = s[i][j] ^ (1<<bit)
-
-def single_byte_multi_bit_flip(s):
-    i = random.choice(range(4))
-    j = random.choice(range(4))
-    for _ in range(4):
-        bit = random.choice(range(8))
-        s[i][j] = s[i][j] ^ (1<<bit)
-
-def double_byte_multi_bit_flip(s):
-    for _ in range(2):
-        i = random.choice(range(4))
-        j = random.choice(range(4))
-        for _ in range(4):
-            bit = random.choice(range(8))
-            s[i][j] = s[i][j] ^ (1<<bit)
-
-def triple_byte_multi_bit_flip(s):
-    for _ in range(3):
-        i = random.choice(range(4))
-        j = random.choice(range(4))
-        for _ in range(4):
-            bit = random.choice(range(8))
-            s[i][j] = s[i][j] ^ (1<<bit)
 
 intermediates = [
     # 'input',
@@ -115,8 +72,8 @@ for intermediate in intermediates:
     faulted = []
     for _ in range(10):
         faulted.append(os.urandom(16))
-    # for _ in range(200):
-    #     faulted.append(ctx.encrypt_block(bytes(message), glitch_at=intermediate, glitch=single_bit_flip))
+    for _ in range(200):
+        faulted.append(ctx.encrypt_block(bytes(message), glitch_at=intermediate, glitch=faultmodels.single_bit_flip))
         # faulted.append(ctx.encrypt_block(bytes(message), glitch_at=intermediate, glitch=single_byte_corruption))
         # faulted.append(ctx.encrypt_block(bytes(message), glitch_at=intermediate, glitch=single_col_corruption))
         # faulted.append(ctx.encrypt_block(bytes(message), glitch_at=intermediate, glitch=single_byte_multi_bit_flip))
